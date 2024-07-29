@@ -1,3 +1,32 @@
-() recv_internal(int msg_value, cell in_msg, slice in_msg_body) impure {
+#include "imports/stdlib.fc";
 
+;; суть задачи: пишем контракт который принимает сообщение, записывает адрес отправителя в ячейку, и имеет геттер который может отдать адрес последнего отправителя сообщения
+
+;; recv_internal обрабатывает входящее сообщение
+() recv_internal(int msg_value, cell in_msg, slice in_msg_body) impure {
+  ;; slice — это адрес определенного фрагмента, указатель на него
+  slice cs = in_msg.begin_parse();
+  ;; парсим 4-битное целое число, вызывая load_uint(4), и присваиваем результат для внутренней переменной flags.
+  int flags = cs~load_uint(4);
+
+  ;; Как только мы собираемся вызвать еще одну ~load_{*} для переменной cs, мы фактически продолжим разбор с того места, где закончилась предыдущая ~load_{*}.
+  ;; работает как курсор
+  ;; тут забираем адрес отправителя сообщения
+  ;; Когда мы хотим создать переменную, хранящую адрес, мы всегда используем тип slice, чтобы хранить только указатель, откуда память должна прочитать адрес, как только он понадобится.
+  slice sender_address = cs~load_msg_addr();
+
+  ;; создаем пустую ячейку
+  ;; set_data(begin_cell().end_cell());
+
+  ;; для записи адреса отправителя сообщения в ячейку используем .store_slice()
+  set_data(begin_cell().store_slice(sender_address).end_cell());
+}
+
+;; функция геттер с модификатором method_id
+;; https://docs.ton.org/develop/func/functions#specifiers
+slice get_the_latest_sender() method_id {
+  ;; получаем указатель в хранилище c4
+  slice ds = get_data().begin_parse();
+  ;; получаем адрес отправителя
+  return ds~load_msg_addr();
 }

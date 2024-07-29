@@ -14,7 +14,7 @@ async function compileScript() {
     targets: ["./contracts/main.fc"],
     sources: (x) => fs.readFileSync(x).toString("utf8"),
   });
-  console.log("🚀 ~ file: compile.ts:37 ~ compileScript ~ compileResult:", compileResult);
+  // console.log("🚀 ~ file: compile.ts:37 ~ compileScript ~ compileResult:", compileResult);
 
   // * ловим ошибки если они есть на этапе компиляции контракта
   if (compileResult.status === "error") {
@@ -31,7 +31,7 @@ async function compileScript() {
   // * cохранение скомпилированного кода
   // * Конструктор ячеек (Cell) предусматривает метод .fromBoc, который получает буфер, так что мы предоставим ему буфер в виде BOC (Body of Cell) в строке формата base64. Когда мы создадим ячейку из BOC, нам также потребуется создать шестнадцатеричное представление этой ячейки и сохранить его в JSON-файле.
   const cellFromBoc = Cell.fromBoc(Buffer.from(compileResult.codeBoc, "base64"))[0];
-  console.log("🚀 ~ file: compile.ts:42 ~ compileScript ~ cellFromBoc:", cellFromBoc);
+  // console.log("🚀 ~ file: compile.ts:42 ~ compileScript ~ cellFromBoc:", cellFromBoc);
   fs.writeFileSync(hexArtifact, JSON.stringify({ hex: cellFromBoc.toBoc().toString("hex") }));
 
   console.log(" - Compiled code saved to " + hexArtifact);
