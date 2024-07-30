@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "compile": "ts-node ./scripts/compile.ts",
-    "test": "yarn compile && yarn jest"
+    "test": "yarn compile && yarn jest",
+    "deploy:testnet": "yarn compile && ts-node ./scripts/deploy.ts",
+    "onchaintest": "ts-node ./scripts/onchaintest.ts"
   },
   "devDependencies": {
     "@swc/core": "^1.7.1",
@@ -17,9 +19,16 @@
     "@ton/ton": "^14.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.12",
+    "@types/qrcode-terminal": "^0.12.2",
+    "@types/qs": "^6.9.15",
     "jest": "^29.7.0",
+    "qrcode-terminal": "^0.12.0",
+    "qs": "^6.12.3",
     "ts-jest": "^29.2.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@orbs-network/ton-access": "^2.3.3"
   }
 }
