@@ -1,4 +1,4 @@
-import { Address, Cell, contractAddress, toNano, TonClient4 } from "@ton/ton";
+import { Cell, contractAddress, Address, TonClient4, toNano } from "@ton/ton";
 import { hex } from "../build/main.compiled.json";
 import { getHttpV4Endpoint } from "@orbs-network/ton-access";
 import qs from "qs";
@@ -15,7 +15,7 @@ async function onchainTestScript() {
   // * а это типа апи для подключения к блокчейну (Scallable and CDN-friendly HTTP API for TON blockchain.)
   // * https://github.com/ton-community/ton-api-v4
   const endpoint = await getHttpV4Endpoint({
-    network: "testnet",
+    network: "mainnet",
   });
   const client4 = new TonClient4({ endpoint });
 
@@ -38,9 +38,9 @@ async function onchainTestScript() {
   // мы сравниваем версию строки адреса со строкой, содержащей возможный адрес предыдущего отправителя, которую мы получили; если они не равны, то выводим в консольный лог адрес нового последнего отправителя.
 
   let link =
-    `https://test.tonhub.com/transfer/` +
+    `https://tonhub.com/transfer/` +
     address.toString({
-      testOnly: true,
+      testOnly: false,
     }) +
     "?" +
     qs.stringify({
@@ -70,7 +70,7 @@ async function onchainTestScript() {
     let most_recent_sender = result[0].cell.beginParse().loadAddress();
 
     if (most_recent_sender && most_recent_sender.toString() !== recent_sender_archive?.toString()) {
-      console.log("New recent sender found: " + most_recent_sender.toString({ testOnly: true }));
+      console.log("New recent sender found: " + most_recent_sender.toString({ testOnly: false }));
       recent_sender_archive = most_recent_sender;
     }
   }, 2000);

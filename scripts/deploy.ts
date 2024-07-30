@@ -39,7 +39,7 @@ async function deployScript() {
   let link =
     `https://tonhub.com/transfer/` +
     address.toString({
-      testOnly: true,
+      testOnly: false,
     }) +
     "?" +
     qs.stringify({
@@ -52,8 +52,5 @@ async function deployScript() {
     console.log(code);
   });
 }
-
-// deployed contract address EQDUe600N-kN8bYgFMstDeyL5yWvjx05k-9QFP4n2iDVWW85
-// https://testnet.tonscan.org/tx/Tr5TIkQfhhZCAAMN0_2hRi0BWbZAT5rXdr1LC7JYtfA=
 
 deployScript();
