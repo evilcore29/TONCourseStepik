@@ -6,8 +6,10 @@
   "scripts": {
     "compile": "ts-node ./scripts/compile.ts",
     "test": "yarn compile && yarn jest",
-    "deploy:testnet": "yarn compile && ts-node ./scripts/deploy.ts",
-    "onchaintest": "ts-node ./scripts/onchaintest.ts"
+    "deploy": "yarn compile && TESTNET=true ts-node ./scripts/deploy.ts",
+    "deploy:mainnet": "yarn compile && ts-node ./scripts/deploy.ts",
+    "onchaintest": "TESTNET=true ts-node ./scripts/onchaintest.ts",
+    "onchaintest:mainnet": "ts-node ./scripts/onchaintest.ts"
   },
   "devDependencies": {
     "@swc/core": "^1.7.1",
@@ -29,6 +31,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@orbs-network/ton-access": "^2.3.3"
+    "@orbs-network/ton-access": "^2.3.3",
+    "dotenv": "^16.4.5"
   }
 }

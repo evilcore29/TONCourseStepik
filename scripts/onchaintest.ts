@@ -3,6 +3,8 @@ import { hex } from "../build/main.compiled.json";
 import { getHttpV4Endpoint } from "@orbs-network/ton-access";
 import qs from "qs";
 import qrcode from "qrcode-terminal";
+import dotenv from "dotenv";
+dotenv.config();
 
 async function onchainTestScript() {
   const codeCell = Cell.fromBoc(Buffer.from(hex, "hex"))[0];
@@ -11,11 +13,13 @@ async function onchainTestScript() {
   // * вычисляем адрес контракта
   const address = contractAddress(0, { code: codeCell, data: dataCell });
 
+  console.log(`Start onchaintest with address ${address.toString()}, and ${process.env.TESTNET ? "testnet" : "mainnet"} network`);
+
   // * написано что это для подключения к API какогото протокола v4
   // * а это типа апи для подключения к блокчейну (Scallable and CDN-friendly HTTP API for TON blockchain.)
   // * https://github.com/ton-community/ton-api-v4
   const endpoint = await getHttpV4Endpoint({
-    network: "mainnet",
+    network: process.env.TESTNET ? "testnet" : "mainnet",
   });
   const client4 = new TonClient4({ endpoint });
 
@@ -40,7 +44,7 @@ async function onchainTestScript() {
   let link =
     `https://tonhub.com/transfer/` +
     address.toString({
-      testOnly: false,
+      testOnly: process.env.TESTNET ? true : false,
     }) +
     "?" +
     qs.stringify({

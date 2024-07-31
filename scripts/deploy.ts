@@ -3,6 +3,9 @@ import { beginCell, Cell, contractAddress, StateInit, storeStateInit, toNano } f
 import qs from "qs";
 import qrcode from "qrcode-terminal";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 async function deployScript() {
   console.log("=================================================================");
   console.log("Deploy script is running, let's deploy our main.fc contract...");
@@ -34,12 +37,13 @@ async function deployScript() {
   });
 
   console.log(`The address of the contract is following: ${address.toString()}`);
-  console.log(`Please scan the QR code below to deploy the contract:`);
+  console.log(process.env.TESTNET);
+  console.log(`Please scan the QR code below to deploy the contract to ${process.env.TESTNET ? "testnet" : "mainnet"}:`);
 
   let link =
-    `https://tonhub.com/transfer/` +
+    `https://${process.env.TESTNET ? "testnet." : ""}tonhub.com/transfer/` +
     address.toString({
-      testOnly: false,
+      testOnly: process.env.TESTNET ? true : false,
     }) +
     "?" +
     qs.stringify({
