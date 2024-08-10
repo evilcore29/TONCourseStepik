@@ -3,10 +3,11 @@ import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, 
 export type MainContractConfig = {
   number: number;
   address: Address;
+  owner_address: Address;
 };
 
 export function mainContractConfigToCell(config: MainContractConfig): Cell {
-  return beginCell().storeUint(config.number, 32).storeAddress(config.address).endCell();
+  return beginCell().storeUint(config.number, 32).storeAddress(config.address).storeAddress(config.owner_address).endCell();
 }
 
 // для того чтобы работать с восстановленным контрактом для его тестирования, рекомендуется писать обертки
@@ -42,6 +43,48 @@ export class MainContract implements Contract {
     return {
       number: stack.readNumber(),
       recent_sender: stack.readAddress(),
+      owner_address: stack.readAddress(),
     };
+  }
+
+  async getBalance(provider: ContractProvider) {
+    const { stack } = await provider.get("get_balance", []);
+    return stack.readNumber();
+  }
+
+  async sendDeposit(provider: ContractProvider, sender: Sender, value: bigint) {
+    const msg_body = beginCell()
+      .storeUint(2, 32) // 2 is OP code
+      .endCell();
+
+    await provider.internal(sender, {
+      value,
+      sendMode: SendMode.PAY_GAS_SEPARATELY,
+      body: msg_body,
+    });
+  }
+
+  // обертка для проверки ситуации когда нет op_code
+  async sendNoCodeDeposit(provider: ContractProvider, sender: Sender, value: bigint) {
+    const msg_body = beginCell().endCell();
+
+    await provider.internal(sender, {
+      value,
+      sendMode: SendMode.PAY_GAS_SEPARATELY,
+      body: msg_body,
+    });
+  }
+
+  async sendWithdrawalRequest(provider: ContractProvider, sender: Sender, value: bigint, amount: bigint) {
+    const msg_body = beginCell()
+      .storeUint(3, 32) // OP code
+      .storeCoins(amount)
+      .endCell();
+
+    await provider.internal(sender, {
+      value,
+      sendMode: SendMode.PAY_GAS_SEPARATELY,
+      body: msg_body,
+    });
   }
 }
