@@ -4,16 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "compile": "ts-node ./scripts/compile.ts",
-    "test": "yarn compile && yarn jest",
-    "deploy": "yarn compile && TESTNET=true ts-node ./scripts/deploy.ts",
-    "deploy:mainnet": "yarn compile && ts-node ./scripts/deploy.ts",
-    "onchaintest": "TESTNET=true ts-node ./scripts/onchaintest.ts",
-    "onchaintest:mainnet": "ts-node ./scripts/onchaintest.ts"
+    "test": "yarn jest"
   },
   "devDependencies": {
     "@swc/core": "^1.7.1",
     "@ton-community/func-js": "^0.7.0",
+    "@ton/blueprint": "^0.22.0",
     "@ton/core": "^0.56.3",
     "@ton/crypto": "^3.2.0",
     "@ton/sandbox": "^0.20.0",
